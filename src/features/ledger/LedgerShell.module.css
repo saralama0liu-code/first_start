@@ -1,0 +1,116 @@
+.shell {
+  position: relative;
+  min-height: 100vh;
+  padding: var(--space-6);
+  display: flex;
+  justify-content: center;
+}
+
+.frame {
+  width: min(100%, 960px);
+  min-height: calc(100vh - var(--space-6) * 2);
+  padding: clamp(20px, 4vw, 32px);
+  border: 1px solid var(--app-border);
+  border-radius: var(--radius-lg);
+  background: rgba(15, 23, 42, 0.6);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(18px);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.kicker {
+  margin: 0 0 var(--space-2);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  line-height: 1.1;
+}
+
+.headerActions {
+  display: inline-flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.tab,
+.tabActive {
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--app-border);
+  cursor: pointer;
+}
+
+.tabActive {
+  background: rgba(245, 158, 11, 0.18);
+  color: var(--text-primary);
+  border-color: rgba(245, 158, 11, 0.45);
+}
+
+.content {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.storageAlert {
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(248, 113, 113, 0.24);
+  background: rgba(248, 113, 113, 0.1);
+  color: #fecaca;
+  line-height: 1.7;
+}
+
+.noticeToastSuccess,
+.noticeToastError {
+  position: fixed;
+  top: calc(var(--space-6) + env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  border-radius: 999px;
+  width: fit-content;
+  max-width: min(92vw, 420px);
+  font-weight: 600;
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(12px);
+}
+
+.noticeToastSuccess {
+  background: rgba(34, 197, 94, 0.12);
+  color: #bbf7d0;
+  border: 1px solid rgba(34, 197, 94, 0.18);
+}
+
+.noticeToastError {
+  background: rgba(248, 113, 113, 0.12);
+  color: #fecaca;
+  border: 1px solid rgba(248, 113, 113, 0.22);
+}
+
+@media (min-width: 900px) {
+  .header {
+    flex-direction: row;
+    align-items: end;
+    justify-content: space-between;
+  }
+}

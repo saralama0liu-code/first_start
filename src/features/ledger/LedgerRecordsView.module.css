@@ -1,0 +1,73 @@
+.view {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.header,
+.card {
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--app-border);
+  background: var(--app-surface);
+}
+
+.label,
+.cardLabel {
+  margin: 0 0 var(--space-2);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.heading {
+  margin: 0;
+  font-size: clamp(1.5rem, 3vw, 2.4rem);
+  line-height: 1.2;
+}
+
+.copy,
+.cardHint {
+  display: block;
+  margin-top: var(--space-3);
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.primaryAction,
+.secondaryAction,
+.closeButton {
+  min-height: 48px;
+  padding: 0 var(--space-5);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.primaryAction {
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  color: #111827;
+  font-weight: 700;
+}
+
+.secondaryAction,
+.closeButton {
+  background: transparent;
+  border: 1px solid var(--app-border);
+  color: var(--text-primary);
+}
+
+.card {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.cardValue {
+  font-size: clamp(2rem, 5vw, 3rem);
+}
+
