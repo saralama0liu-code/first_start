@@ -1,75 +1,344 @@
 .panel {
   display: grid;
-  gap: var(--space-5);
-  padding: var(--space-6);
+  gap: 8px;
+  padding: 10px 12px 12px;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--app-border);
+  border: 1px solid rgba(73, 123, 84, 0.14);
   background:
-    linear-gradient(180deg, rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.82));
+    linear-gradient(180deg, rgba(92, 188, 114, 0.12), rgba(255, 255, 255, 0.92));
   box-shadow: var(--shadow-md);
 }
 
 .header {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.headerBody {
   display: grid;
-  gap: var(--space-2);
+  gap: 4px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.headerAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid rgba(73, 123, 84, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  color: #1c5e35;
+  font: inherit;
+  cursor: pointer;
+  box-shadow: 0 8px 16px rgba(58, 96, 67, 0.06);
+  list-style: none;
+}
+
+.moreMenu {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.moreMenu > summary::-webkit-details-marker {
+  display: none;
+}
+
+.morePanel {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 3;
+  display: grid;
+  gap: 4px;
+  min-width: 10.5rem;
+  padding: 6px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(73, 123, 84, 0.14);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: var(--shadow-md);
+}
+
+.moreButton {
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: calc(var(--radius-md) - 2px);
+  background: transparent;
+  color: #1c5e35;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.moreButton:hover,
+.moreButton:focus-visible {
+  background: rgba(92, 188, 114, 0.1);
+}
+
+.summaryRow {
+  display: grid;
+  gap: 8px;
 }
 
 .label,
-.cardLabel,
-.statusLabel {
+.cardLabel {
   margin: 0;
   font-size: 12px;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--text-muted);
 }
 
 .title {
   margin: 0;
-  font-size: clamp(1.35rem, 3vw, 2rem);
-  line-height: 1.2;
+  font-size: clamp(1rem, 2.1vw, 1.4rem);
+  line-height: 1.08;
 }
 
 .copy {
   margin: 0;
   color: var(--text-secondary);
-  line-height: 1.7;
+  line-height: 1.45;
+  font-size: 0.88rem;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: var(--space-3);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
 }
 
-.card {
+.card,
+.ringCard {
   display: grid;
-  gap: var(--space-2);
-  padding: var(--space-5);
+  gap: 2px;
+  padding: 10px 11px;
   border-radius: var(--radius-md);
-  background: rgba(2, 6, 23, 0.38);
-  border: 1px solid rgba(148, 163, 184, 0.12);
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(73, 123, 84, 0.12);
+  box-shadow: 0 10px 20px rgba(58, 96, 67, 0.06);
 }
 
 .amount {
-  font-size: clamp(1.5rem, 4vw, 2.4rem);
+  font-size: clamp(0.98rem, 3vw, 1.35rem);
 }
 
-.status {
+.ringCard {
+  position: relative;
+  isolation: isolate;
   display: grid;
-  gap: var(--space-2);
-  padding-top: var(--space-2);
-  border-top: 1px solid rgba(148, 163, 184, 0.12);
+  place-items: center;
+  min-height: 146px;
+  padding: 10px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255, 255, 255, 0.96) 0 30%, rgba(255, 255, 255, 0) 31%),
+    linear-gradient(180deg, rgba(92, 188, 114, 0.12), rgba(255, 255, 255, 0.94));
+  border: 1px solid rgba(92, 188, 114, 0.16);
 }
 
-.statusValue {
+.ringFill {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    180deg,
+    var(--budget-fill-color, rgba(51, 151, 82, 0.22)) 0 calc(var(--budget-progress, 0) * 100%),
+    var(--budget-fill-track, rgba(250, 255, 251, 0.86)) calc(var(--budget-progress, 0) * 100%) 100%
+  );
+}
+
+.ringOrbit {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  z-index: 1;
+  width: min(100%, 146px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: conic-gradient(
+    from var(--budget-ring-start, -90deg),
+    var(--budget-ring-color, rgba(51, 151, 82, 0.96)) 0 calc(var(--budget-progress, 0) * 1turn),
+    var(--budget-ring-track, rgba(92, 188, 114, 0.16)) 0 1turn
+  );
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 22px),
+    #000 calc(100% - 21px)
+  );
+  mask: radial-gradient(farthest-side, transparent calc(100% - 22px), #000 calc(100% - 21px));
+  opacity: 0.98;
+  filter: drop-shadow(0 16px 22px rgba(58, 96, 67, 0.12));
+}
+
+.ring {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: min(100%, 112px);
+  min-height: 112px;
+  padding: 9px 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow:
+    inset 0 0 0 10px rgba(92, 188, 114, 0.08),
+    0 10px 18px rgba(58, 96, 67, 0.08);
+  text-align: center;
+  gap: 2px;
+}
+
+.ringLabel {
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.ringValue {
+  font-size: clamp(1.02rem, 2.9vw, 1.24rem);
+  color: #1b5d34;
+}
+
+.ringProgress {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #21603a;
+}
+
+.ringCopy {
   color: var(--text-secondary);
-  line-height: 1.6;
+  line-height: 1.25;
+  font-size: 0.8rem;
 }
 
-@media (min-width: 680px) {
+.ring[data-status='over-budget'] .ringCopy {
+  font-size: 0.7rem;
+  line-height: 1.08;
+  white-space: nowrap;
+  letter-spacing: 0;
+}
+
+@media (min-width: 720px) {
+  .summaryRow {
+    grid-template-columns: 1.3fr 1fr;
+  }
+
   .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: start;
   }
 }
 
+@media (max-width: 420px) {
+  .panel {
+    gap: 7px;
+    padding: 9px 10px 10px;
+  }
+
+  .header {
+    gap: 6px;
+  }
+
+  .headerAction {
+    min-height: 30px;
+    padding: 0 10px;
+    font-size: 0.78rem;
+  }
+
+  .morePanel {
+    min-width: 9.5rem;
+  }
+
+  .moreButton {
+    padding: 7px 8px;
+    font-size: 0.8rem;
+  }
+
+  .summaryRow {
+    gap: 7px;
+  }
+
+  .grid {
+    gap: 7px;
+  }
+
+  .card,
+  .ringCard {
+    padding: 8px 9px;
+    min-height: 64px;
+  }
+
+  .ringCard {
+    min-height: 132px;
+    padding: 8px;
+    overflow: hidden;
+  }
+
+  .ringOrbit {
+    width: min(100%, 128px);
+    -webkit-mask: radial-gradient(
+      farthest-side,
+      transparent calc(100% - 18px),
+      #000 calc(100% - 17px)
+    );
+    mask: radial-gradient(farthest-side, transparent calc(100% - 18px), #000 calc(100% - 17px));
+  }
+
+  .ring {
+    width: min(100%, 98px);
+    min-height: 98px;
+    padding: 7px 8px;
+    box-shadow: inset 0 0 0 7px rgba(92, 188, 114, 0.08);
+  }
+
+  .title {
+    font-size: 0.96rem;
+    line-height: 1.08;
+  }
+
+  .copy {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    font-size: 0.8rem;
+  }
+
+  .ringLabel {
+    font-size: 10px;
+  }
+
+  .ringValue {
+    font-size: 0.98rem;
+  }
+
+  .ringProgress {
+    font-size: 0.94rem;
+  }
+
+  .ringCopy {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    font-size: 0.76rem;
+  }
+
+  .ring[data-status='over-budget'] .ringCopy {
+    display: block;
+    overflow: visible;
+    -webkit-line-clamp: unset;
+    -webkit-box-orient: initial;
+    font-size: 0.62rem;
+    line-height: 1.04;
+  }
+
+}

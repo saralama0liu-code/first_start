@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { STORAGE_KEYS } from './ledger.constants';
 import type { LedgerRecord } from '@/types/ledger';
 import { createLedgerStore } from './ledger.store';
 
@@ -52,7 +53,33 @@ const recordC: LedgerRecord = {
 describe('ledger store', () => {
   it('hydrates from storage and sorts records newest first', () => {
     const storage = createMockStorage();
-    storage.setItem('quick-ledger.records', JSON.stringify([recordA, recordB, recordC]));
+    const now = new Date();
+    const thisMonthRecordA = {
+      ...recordA,
+      time: new Date(now.getTime() - 3 * 60 * 60 * 1000).toISOString(),
+    };
+    const thisMonthRecordB = {
+      ...recordB,
+      time: new Date(now.getTime() - 2 * 60 * 60 * 1000).toISOString(),
+    };
+    const lastMonthRecordC = {
+      ...recordC,
+      time: new Date(now.getFullYear(), now.getMonth() - 1, 15, 10, 0, 0).toISOString(),
+    };
+    storage.setItem(
+      'quick-ledger.records',
+      JSON.stringify([thisMonthRecordA, thisMonthRecordB, lastMonthRecordC]),
+    );
+    storage.setItem(
+      'quick-ledger.budgetSettings',
+      JSON.stringify({
+        monthlyBudget: 100,
+        categoryBudgets: {
+          餐饮: 50,
+          交通: 40,
+        },
+      }),
+    );
 
     const store = createLedgerStore(storage);
     const snapshot = store.hydrate();
@@ -61,6 +88,33 @@ describe('ledger store', () => {
     expect(snapshot.storageAvailable).toBe(true);
     expect(snapshot.storageIssue).toBeNull();
     expect(snapshot.records.map((record) => record.id)).toEqual(['b', 'a', 'c']);
+    expect(snapshot.budgetSettings).toEqual({
+      monthlyBudget: 100,
+      categoryBudgets: {
+        餐饮: 50,
+        交通: 40,
+      },
+    });
+    expect(snapshot.budgetProgress).toMatchObject({
+      monthlyBudget: 100,
+      monthlyExpense: 55,
+      remainingBudget: 45,
+      overspentAmount: null,
+      usageRatio: 0.55,
+      status: 'within-budget',
+    });
+    expect(snapshot.budgetSummaryCopy).toEqual({
+      headline: '剩余 ¥45.00',
+      detail: '本月已用 55%',
+    });
+    expect(snapshot.categoryBudgetSummaries[0]).toMatchObject({
+      category: '餐饮',
+      monthlyBudget: 50,
+      monthlyExpense: 20,
+      remainingBudget: 30,
+      displayBalance: '剩余 ¥30.00',
+      displayProgress: '40%',
+    });
     expect(store.getRecentRecords(2).map((record) => record.id)).toEqual(['b', 'a']);
     expect(store.getAllRecords().map((record) => record.id)).toEqual(['b', 'a', 'c']);
   });
@@ -130,5 +184,45 @@ describe('ledger store', () => {
 
     expect(store.updateRecord('missing', recordA)).toBe(false);
     expect(store.removeRecord('missing')).toBe(false);
+  });
+
+  it('updates and persists budget settings', () => {
+    const storage = createMockStorage();
+    const store = createLedgerStore(storage);
+
+    expect(
+      store.updateBudgetSettings({
+        monthlyBudget: 3000,
+        categoryBudgets: {
+          餐饮: 800,
+          交通: 200,
+        },
+      }),
+    ).toBe(true);
+
+    const snapshot = store.getSnapshot();
+
+    expect(snapshot.budgetSettings).toEqual({
+      monthlyBudget: 3000,
+      categoryBudgets: {
+        餐饮: 800,
+        交通: 200,
+      },
+    });
+    expect(snapshot.budgetProgress).toMatchObject({
+      monthlyBudget: 3000,
+      monthlyExpense: 0,
+      remainingBudget: 3000,
+      overspentAmount: null,
+      usageRatio: 0,
+      status: 'within-budget',
+    });
+    expect(JSON.parse(storage.getItem(STORAGE_KEYS.ledgerBudgetSettings) ?? '{}')).toEqual({
+      monthlyBudget: 3000,
+      categoryBudgets: {
+        餐饮: 800,
+        交通: 200,
+      },
+    });
   });
 });

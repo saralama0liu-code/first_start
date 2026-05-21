@@ -14,7 +14,7 @@
 
 ## 2. 实施原则
 
-- 严格以 [design-document.md](</Users/liuxuan/Documents/VIBE CODING/记账/memory-bank/design-document.md>) 和 [tech-stack.md](</Users/liuxuan/Documents/VIBE CODING/记账/memory-bank/tech-stack.md>) 为准
+- 严格以 [design-document.md](</Users/liuxuan/Documents/VIBE%20CODING/记账/memory-bank/V1/design-document.md>) 和 [tech-stack.md](</Users/liuxuan/Documents/VIBE%20CODING/记账/memory-bank/V1/tech-stack.md>) 为准
 - 使用 `Vite + React + TypeScript + CSS Modules + localStorage + zod + date-fns`
 - 保持移动端优先
 - 不提前实现 V1 范围外功能
