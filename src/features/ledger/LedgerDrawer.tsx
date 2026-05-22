@@ -248,17 +248,10 @@ export function LedgerDrawer({ isOpen, mode, record, onClose, onSubmitRecord }: 
 
     setFeedbackTone('success');
     setFeedbackMessage('已保存');
-
-    if (mode === 'create') {
-      setFormState(createLedgerDrawerFormState('create', null, readLedgerFormPreferences()));
-      setFieldErrors({});
-      return;
-    }
-
     onClose();
   };
 
-  const saveButtonLabel = mode === 'edit' ? '保存修改' : '保存并继续';
+  const saveButtonLabel = '保存并关闭';
 
   return (
     <div

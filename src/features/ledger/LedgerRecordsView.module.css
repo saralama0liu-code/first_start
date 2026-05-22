@@ -1,17 +1,21 @@
 .view {
-  display: grid;
-  gap: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
 }
 
-.header,
+.topBar,
 .card {
-  padding: var(--space-6);
+  padding: var(--space-3);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--app-border);
-  background: var(--app-surface);
+  border: 1px solid rgba(73, 123, 84, 0.14);
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: var(--shadow-md);
 }
 
-.label,
 .cardLabel {
   margin: 0 0 var(--space-2);
   font-size: 12px;
@@ -20,45 +24,40 @@
   color: var(--text-muted);
 }
 
-.heading {
-  margin: 0;
-  font-size: clamp(1.5rem, 3vw, 2.4rem);
-  line-height: 1.2;
-}
-
-.copy,
 .cardHint {
   display: block;
-  margin-top: var(--space-3);
+  margin-top: var(--space-2);
   color: var(--text-secondary);
-  line-height: 1.7;
+  line-height: 1.6;
 }
 
-.actions {
+.topBar {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: var(--space-3);
-  flex-wrap: wrap;
 }
 
 .primaryAction,
 .secondaryAction,
 .closeButton {
   min-height: 48px;
-  padding: 0 var(--space-5);
+  padding: 0 var(--space-4);
   border-radius: 999px;
   cursor: pointer;
+  box-shadow: 0 10px 22px rgba(58, 96, 67, 0.08);
 }
 
 .primaryAction {
   background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-  color: #111827;
+  color: #ffffff;
   font-weight: 700;
 }
 
 .secondaryAction,
 .closeButton {
-  background: transparent;
-  border: 1px solid var(--app-border);
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(73, 123, 84, 0.14);
   color: var(--text-primary);
 }
 
@@ -67,7 +66,87 @@
   gap: var(--space-2);
 }
 
-.cardValue {
-  font-size: clamp(2rem, 5vw, 3rem);
+.cardRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
 }
 
+.cardValue {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(92, 188, 114, 0.12);
+  color: #1c5e35;
+  font-size: clamp(1rem, 4.4vw, 1.35rem);
+}
+
+.cardHint {
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 420px) {
+  .view {
+    gap: var(--space-2);
+  }
+
+  .topBar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    align-items: flex-start;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .primaryAction,
+  .secondaryAction,
+  .closeButton {
+    min-height: 44px;
+    padding: 0 var(--space-3);
+  }
+
+  .secondaryAction {
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    justify-self: start;
+  }
+
+  .primaryAction {
+    width: 100%;
+    align-self: stretch;
+  }
+
+  .card {
+    padding: var(--space-2);
+  }
+
+  .cardRow {
+    gap: var(--space-2);
+  }
+
+  .cardValue {
+    min-width: 2rem;
+    min-height: 2rem;
+    padding: 0 8px;
+  }
+
+  .cardHint {
+    display: none;
+  }
+}

@@ -2,7 +2,7 @@
 
 # Deprecated（已废弃）
 
-> ⚠️ 本文档已不再作为开发依据，请以 `memory-bank/design-document.md` 为唯一参考来源
+> ⚠️ 本文档已不再作为开发依据，请以 `memory-bank/V2/design-document.md` 为唯一参考来源。V1 归档见 `memory-bank/V1/`
 
 ---
 

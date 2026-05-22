@@ -3,9 +3,12 @@ import { describe, expect, it } from 'vitest';
 import type { LedgerRecord } from '@/types/ledger';
 import {
   canUseLedgerStorage,
+  clearLedgerBudgetSettings,
   clearLedgerRecords,
+  readLedgerBudgetSettings,
   readLedgerFormPreferences,
   readLedgerRecords,
+  writeLedgerBudgetSettings,
   writeLedgerFormPreferences,
   writeLedgerRecords,
 } from './storage-service';
@@ -59,7 +62,7 @@ describe('storage service', () => {
     expect(readLedgerRecords(storage)).toEqual({
       records: [],
       issue: 'invalid-data',
-      message: '检测到本地数据损坏，已忽略异常数据',
+      message: '本地记录已损坏，已忽略',
     });
   });
 
@@ -108,7 +111,73 @@ describe('storage service', () => {
     expect(readLedgerRecords(undefined)).toEqual({
       records: [],
       issue: 'unavailable',
-      message: '当前环境不支持本地存储，无法使用',
+      message: '当前环境不支持本地保存',
+    });
+  });
+
+  it('writes and reads ledger budget settings safely', () => {
+    const storage = createMockStorage();
+
+    expect(
+      writeLedgerBudgetSettings(
+        {
+          monthlyBudget: 2000,
+          categoryBudgets: {
+            餐饮: 600,
+            交通: 300,
+          },
+        },
+        storage,
+      ),
+    ).toBe(true);
+    expect(readLedgerBudgetSettings(storage)).toEqual({
+      settings: {
+        monthlyBudget: 2000,
+        categoryBudgets: {
+          餐饮: 600,
+          交通: 300,
+        },
+      },
+      issue: null,
+      message: null,
+    });
+  });
+
+  it('returns default budget settings for malformed budget data', () => {
+    const storage = createMockStorage();
+    storage.setItem('quick-ledger.budgetSettings', 'not-json');
+
+    expect(readLedgerBudgetSettings(storage)).toEqual({
+      settings: {
+        monthlyBudget: 2000,
+        categoryBudgets: {},
+      },
+      issue: 'invalid-data',
+      message: '预算数据已损坏，已回退默认值',
+    });
+  });
+
+  it('clears stored ledger budget settings', () => {
+    const storage = createMockStorage();
+
+    writeLedgerBudgetSettings(
+      {
+        monthlyBudget: 2000,
+        categoryBudgets: {
+          餐饮: 600,
+        },
+      },
+      storage,
+    );
+
+    expect(clearLedgerBudgetSettings(storage)).toBe(true);
+    expect(readLedgerBudgetSettings(storage)).toEqual({
+      settings: {
+        monthlyBudget: 2000,
+        categoryBudgets: {},
+      },
+      issue: null,
+      message: null,
     });
   });
 });

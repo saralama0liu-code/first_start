@@ -3,12 +3,23 @@ import { useEffect, useState } from 'react';
 import { calculateLedgerStats } from './ledger.stats';
 import { ledgerStore } from './ledger.store';
 import { LedgerDrawer } from './LedgerDrawer';
+import { LedgerBudgetView } from './LedgerBudgetView';
+import { LedgerImportDraftView } from './LedgerImportDraftView';
 import { LedgerHomeView } from './LedgerHomeView';
 import { LedgerRecordsView } from './LedgerRecordsView';
+import {
+  createSampleLedgerImportDraft,
+  readLedgerImportDraftFromLocation,
+} from './ledger.import-draft';
 import styles from './LedgerShell.module.css';
-import type { FormMode, LedgerRecord } from '@/types/ledger';
+import type {
+  FormMode,
+  LedgerBudgetSettings,
+  LedgerImportDraft,
+  LedgerRecord,
+} from '@/types/ledger';
 
-type LedgerView = 'home' | 'records';
+type LedgerView = 'home' | 'records' | 'budget' | 'draft';
 
 interface LedgerDrawerState {
   isOpen: boolean;
@@ -17,7 +28,9 @@ interface LedgerDrawerState {
 }
 
 export function LedgerShell() {
-  const [view, setView] = useState<LedgerView>('home');
+  const [initialDraft] = useState<LedgerImportDraft | null>(() => readLedgerImportDraftFromLocation());
+  const [view, setView] = useState<LedgerView>(initialDraft ? 'draft' : 'home');
+  const [draft, setDraft] = useState<LedgerImportDraft | null>(initialDraft);
   const [drawerState, setDrawerState] = useState<LedgerDrawerState>({
     isOpen: false,
     mode: 'create',
@@ -48,7 +61,7 @@ export function LedgerShell() {
   const openCreateDrawer = () => {
     if (isStorageUnavailable) {
       setNotice({
-        message: '当前环境不支持本地存储，无法使用',
+        message: '当前环境不支持本地保存',
         tone: 'error',
       });
       return;
@@ -64,7 +77,7 @@ export function LedgerShell() {
   const openEditDrawer = (record: LedgerRecord) => {
     if (isStorageUnavailable) {
       setNotice({
-        message: '当前环境不支持本地存储，无法使用',
+        message: '当前环境不支持本地保存',
         tone: 'error',
       });
       return;
@@ -80,7 +93,7 @@ export function LedgerShell() {
   const handleDeleteRecord = (record: LedgerRecord) => {
     if (isStorageUnavailable) {
       setNotice({
-        message: '当前环境不支持本地存储，无法使用',
+        message: '当前环境不支持本地保存',
         tone: 'error',
       });
       return false;
@@ -119,6 +132,62 @@ export function LedgerShell() {
     return ledgerStore.addRecord(nextRecord);
   };
 
+  const handleSaveBudgetSettings = (nextSettings: LedgerBudgetSettings) => {
+    if (isStorageUnavailable) {
+      setNotice({
+        message: '当前环境不支持本地保存',
+        tone: 'error',
+      });
+      return false;
+    }
+
+    const saved = ledgerStore.updateBudgetSettings(nextSettings);
+
+    setNotice({
+      message: saved ? '预算已保存' : '预算保存失败',
+      tone: saved ? 'success' : 'error',
+    });
+
+    return saved;
+  };
+
+  const openImportDraft = (nextDraft: LedgerImportDraft = createSampleLedgerImportDraft()) => {
+    if (isStorageUnavailable) {
+      setNotice({
+        message: '当前环境不支持本地保存',
+        tone: 'error',
+      });
+      return;
+    }
+
+    setDraft(nextDraft);
+    setView('draft');
+  };
+
+  const handleConfirmDraft = (nextRecord: LedgerRecord) => {
+    if (isStorageUnavailable) {
+      setNotice({
+        message: '当前环境不支持本地保存',
+        tone: 'error',
+      });
+      return false;
+    }
+
+    const saved = ledgerStore.addRecord(nextRecord);
+
+    setNotice({
+      message: saved ? '草稿已保存' : '草稿保存失败',
+      tone: saved ? 'success' : 'error',
+    });
+
+    if (saved) {
+      setDraft(null);
+      setView('home');
+    }
+
+    return saved;
+  };
+
   return (
     <main className={styles.shell}>
       {notice ? (
@@ -137,23 +206,6 @@ export function LedgerShell() {
             <p className={styles.kicker}>Quick Ledger</p>
             <h1 className={styles.title}>超快记账工具</h1>
           </div>
-
-          <div className={styles.headerActions} role="tablist" aria-label="页面切换">
-            <button
-              className={view === 'home' ? styles.tabActive : styles.tab}
-              type="button"
-              onClick={() => setView('home')}
-            >
-              首页
-            </button>
-            <button
-              className={view === 'records' ? styles.tabActive : styles.tab}
-              type="button"
-              onClick={() => setView('records')}
-            >
-              全部记录
-            </button>
-          </div>
         </header>
 
         <section className={styles.content}>
@@ -166,18 +218,39 @@ export function LedgerShell() {
           {view === 'home' ? (
             <LedgerHomeView
               stats={stats}
+              budgetProgress={ledgerSnapshot.budgetProgress}
+              budgetSummaryCopy={ledgerSnapshot.budgetSummaryCopy}
               onOpenDrawer={openCreateDrawer}
+              onOpenBudget={() => setView('budget')}
+              onOpenDraftImport={() => openImportDraft()}
               onEditRecord={openEditDrawer}
               onDeleteRecord={handleDeleteRecord}
               onOpenRecords={() => setView('records')}
             />
-          ) : (
+          ) : view === 'records' ? (
             <LedgerRecordsView
               records={records}
               onBackToHome={() => setView('home')}
               onOpenDrawer={openCreateDrawer}
               onEditRecord={openEditDrawer}
               onDeleteRecord={handleDeleteRecord}
+            />
+          ) : view === 'budget' ? (
+            <LedgerBudgetView
+              budgetSettings={ledgerSnapshot.budgetSettings}
+              budgetProgress={ledgerSnapshot.budgetProgress}
+              budgetSummaryCopy={ledgerSnapshot.budgetSummaryCopy}
+              categoryBudgetSummaries={ledgerSnapshot.categoryBudgetSummaries}
+              onBackToHome={() => setView('home')}
+              onOpenRecords={() => setView('records')}
+              onSaveBudgetSettings={handleSaveBudgetSettings}
+            />
+          ) : (
+            <LedgerImportDraftView
+              draft={draft}
+              onBackToHome={() => setView('home')}
+              onOpenManualDrawer={openCreateDrawer}
+              onConfirmDraft={handleConfirmDraft}
             />
           )}
         </section>

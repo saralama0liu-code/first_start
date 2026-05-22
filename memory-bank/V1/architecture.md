@@ -15,11 +15,11 @@ The architecture should favor clarity over abstraction.
 #### Root Documentation
 
 - [PRD.md](/Users/liuxuan/Documents/VIBE%20CODING/记账/PRD.md): deprecated source document kept for reference only
-- [memory-bank/design-document.md](/Users/liuxuan/Documents/VIBE%20CODING/记账/memory-bank/design-document.md): product design source of truth
-- [memory-bank/tech-stack.md](/Users/liuxuan/Documents/VIBE%20CODING/记账/memory-bank/tech-stack.md): technology choice and implementation guidance
-- [memory-bank/implementation-plan.md](/Users/liuxuan/Documents/VIBE%20CODING/记账/memory-bank/implementation-plan.md): step-by-step execution plan for AI developers
-- [memory-bank/progress.md](/Users/liuxuan/Documents/VIBE%20CODING/记账/memory-bank/progress.md): running record of completed work and verification status
-- [memory-bank/architecture.md](/Users/liuxuan/Documents/VIBE%20CODING/记账/memory-bank/architecture.md): evolving architecture notes and file responsibilities
+- [memory-bank/V1/design-document.md](/Users/liuxuan/Documents/VIBE%20CODING/记账/memory-bank/V1/design-document.md): product design source of truth for the archived V1 track
+- [memory-bank/V1/tech-stack.md](/Users/liuxuan/Documents/VIBE%20CODING/记账/memory-bank/V1/tech-stack.md): technology choice and implementation guidance for archived V1 work
+- [memory-bank/V1/implementation-plan.md](/Users/liuxuan/Documents/VIBE%20CODING/记账/memory-bank/V1/implementation-plan.md): step-by-step execution plan for archived V1 work
+- [memory-bank/V1/progress.md](/Users/liuxuan/Documents/VIBE%20CODING/记账/memory-bank/V1/progress.md): running record of completed work and verification status for archived V1 work
+- [memory-bank/V1/architecture.md](/Users/liuxuan/Documents/VIBE%20CODING/记账/memory-bank/V1/architecture.md): evolving architecture notes and file responsibilities for archived V1 work
 
 #### App Entry Files
 
